@@ -2,19 +2,31 @@
   {
     "id": 1,
     "name": "Cloud Automation Script",
-    "description": "Python based automated data scraper script.",
+    "description": "Python based automated data scraper script for high-speed lead gen.",
     "price": 49.99
   },
   {
     "id": 2,
     "name": "AI Workflow Template",
-    "description": "Ready-to-use n8n integration template.",
+    "description": "Ready-to-use n8n integration template for smart automation.",
     "price": 29.99
   },
   {
     "id": 3,
     "name": "Secure API Boilerplate",
-    "description": "Production-ready backend API structure.",
+    "description": "Production-ready backend API structure with built-in auth.",
     "price": 99.99
+  },
+  {
+    "id": 4,
+    "name": "SaaS Landing Page UI Kit",
+    "description": "Modern, high-converting HTML/CSS responsive templates.",
+    "price": 19.99
+  },
+  {
+    "id": 5,
+    "name": "Prompt Engineering Bundle",
+    "description": "Curated set of 500+ advanced LLM system prompts.",
+    "price": 39.99
   }
 ]
