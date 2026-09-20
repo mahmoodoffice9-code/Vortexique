@@ -11,7 +11,10 @@
     <!-- Header / Navbar -->
     <header class="navbar">
         <div class="logo">⚡ Vortexique</div>
-        <div class="cart-btn" onclick="toggleCart()">🛒 Cart (<span id="cart-count">0</span>)</div>
+        <div class="nav-actions">
+            <button class="admin-btn" onclick="toggleAdminModal()">➕ Add Product</button>
+            <div class="cart-btn" onclick="toggleCart()">🛒 Cart (<span id="cart-count">0</span>)</div>
+        </div>
     </header>
 
     <!-- Main Content -->
@@ -21,6 +24,35 @@
             <!-- Products will be loaded dynamically via JS -->
         </div>
     </main>
+
+    <!-- Add Product Modal -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Product</h2>
+                <button onclick="toggleAdminModal()">✕</button>
+            </div>
+            <form id="product-form" onsubmit="addNewProduct(event)">
+                <div class="form-group">
+                    <label>Product Title</label>
+                    <input type="text" id="p-title" required placeholder="e.g. AI Content Generator">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="p-desc" rows="3" required placeholder="Product description..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Price ($)</label>
+                    <input type="number" step="0.01" id="p-price" required placeholder="49.99">
+                </div>
+                <div class="form-group">
+                    <label>Image URLs (4-5 pics, comma-separated)</label>
+                    <textarea id="p-images" rows="2" required placeholder="https://img1.com, https://img2.com, https://img3.com"></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Save Product</button>
+            </form>
+        </div>
+    </div>
 
     <!-- Cart Drawer -->
     <div id="cart-drawer" class="cart-drawer">
