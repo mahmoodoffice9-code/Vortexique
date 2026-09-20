@@ -1,28 +1,27 @@
 let products = [];
 let cart = [];
 
-// Fetch products from JSON and merge with LocalStorage (Admin added products)
+// Fetch products from JSON and merge with LocalStorage
 async function fetchProducts() {
     try {
         const response = await fetch('products.json');
         const defaultProducts = await response.json();
         
-        // Check if user has added custom products in localStorage
         const customProducts = JSON.parse(localStorage.getItem('custom_products')) || [];
-        
         products = [...defaultProducts, ...customProducts];
         renderProducts();
     } catch (error) {
         console.error('Error fetching products:', error);
-        // Fallback to localStorage only if fetch fails
         products = JSON.parse(localStorage.getItem('custom_products')) || [];
         renderProducts();
     }
 }
 
-// Render Products with Image Slider Support & Unique Fallback
+// Render Products
 function renderProducts() {
     const grid = document.getElementById("product-grid");
+    if (!grid) return;
+
     if (products.length === 0) {
         grid.innerHTML = "<p>No products available.</p>";
         return;
@@ -31,7 +30,7 @@ function renderProducts() {
     grid.innerHTML = products.map((product, pIndex) => {
         let images = product.images;
         
-        // Ensure images is always a clean array of strings
+        // Handle string or array format for images
         if (typeof images === 'string') {
             images = images.split(',').map(img => img.trim()).filter(img => img.length > 0);
         }
@@ -40,10 +39,8 @@ function renderProducts() {
             images = [`https://picsum.photos/seed/${product.id}/500/300`];
         }
 
-        console.log(`Product: ${product.name}`, images);
-
         const imageHTML = images.map((img, i) => `
-            <img src="${img}" class="${i === 0 ? 'active' : ''}" alt="${product.name}" onerror="this.src='https://picsum.photos/seed/${product.id}/500/300'">
+            <img src="${img}" class="${i === 0 ? 'active' : ''}" alt="${product.name}">
         `).join('');
 
         return `
@@ -76,8 +73,9 @@ function changeSlide(productIndex, direction) {
     const slider = document.getElementById(`slider-${productIndex}`);
     if (!slider) return;
     const images = slider.querySelectorAll('img');
+    if (images.length <= 1) return;
     
-    if(!window.slideIndices[productIndex]) {
+    if (!window.slideIndices[productIndex]) {
         window.slideIndices[productIndex] = 0;
     }
     
@@ -91,10 +89,10 @@ function changeSlide(productIndex, direction) {
 // Toggle Admin Modal
 function toggleAdminModal() {
     const modal = document.getElementById("admin-modal");
-    modal.classList.toggle("open");
+    if (modal) modal.classList.toggle("open");
 }
 
-// Add New Product Handler (Fixed Image URL parsing)
+// Add New Product Handler
 function addNewProduct(event) {
     event.preventDefault();
     
@@ -103,19 +101,17 @@ function addNewProduct(event) {
     const price = parseFloat(document.getElementById("p-price").value);
     const imagesInput = document.getElementById("p-images").value;
     
-    // Clean and split image URLs properly
     let images = imagesInput
         .split(',')
         .map(img => img.trim())
         .filter(img => img.length > 0);
 
-    // Fallback if no valid link is provided
     if (images.length === 0) {
         images = [`https://picsum.photos/seed/${Date.now()}/500/300`];
     }
 
     const newProduct = {
-        id: Date.now(), // Unique ID
+        id: Date.now(),
         name: title,
         description: desc,
         price: price,
@@ -126,24 +122,22 @@ function addNewProduct(event) {
     customProducts.push(newProduct);
     localStorage.setItem('custom_products', JSON.stringify(customProducts));
 
-    // Reset form and close modal
     document.getElementById("product-form").reset();
     toggleAdminModal();
     
-    // Refresh products list
     fetchProducts();
     alert("Product added successfully!");
 }
 
-// Cart Drawer Toggle
+// Cart Functions
 function toggleCart() {
     const drawer = document.getElementById("cart-drawer");
-    drawer.classList.toggle("open");
+    if (drawer) drawer.classList.toggle("open");
 }
 
-// Add Item to Cart
 function addToCart(productId) {
     const product = products.find(p => p.id === productId);
+    if (!product) return;
     const existing = cart.find(item => item.id === productId);
 
     if (existing) {
@@ -155,11 +149,12 @@ function addToCart(productId) {
     updateCartUI();
 }
 
-// Update Cart Display
 function updateCartUI() {
     const cartCount = document.getElementById("cart-count");
     const cartItems = document.getElementById("cart-items");
     const cartTotal = document.getElementById("cart-total");
+
+    if (!cartCount || !cartItems || !cartTotal) return;
 
     const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -177,9 +172,8 @@ function updateCartUI() {
     `).join('');
 }
 
-// Checkout placeholder
 function checkout() {
-    if(cart.length === 0) {
+    if (cart.length === 0) {
         alert("Your cart is empty!");
         return;
     }
