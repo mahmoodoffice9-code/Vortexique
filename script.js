@@ -1,41 +1,121 @@
 let products = [];
 let cart = [];
 
-// Apni khud ki JSON file se products fetch karna
+// Fetch products from JSON and merge with LocalStorage (Admin added products)
 async function fetchProducts() {
     try {
         const response = await fetch('products.json');
-        if (!response.ok) {
-            throw new Error('Failed to load products');
-        }
-        products = await response.json();
+        const defaultProducts = await response.json();
+        
+        // Check if user has added custom products in localStorage
+        const customProducts = JSON.parse(localStorage.getItem('custom_products')) || [];
+        
+        products = [...defaultProducts, ...customProducts];
         renderProducts();
     } catch (error) {
         console.error('Error fetching products:', error);
-        document.getElementById("product-grid").innerHTML = "<p>Failed to load products.</p>";
+        // Fallback to localStorage only if fetch fails
+        products = JSON.parse(localStorage.getItem('custom_products')) || [];
+        renderProducts();
     }
 }
 
-// Load Products on Page
+// Render Products with Image Slider Support
 function renderProducts() {
     const grid = document.getElementById("product-grid");
     if (products.length === 0) {
-        grid.innerHTML = "<p>Loading products...</p>";
+        grid.innerHTML = "<p>No products available.</p>";
         return;
     }
     
-    grid.innerHTML = products.map(product => `
-        <div class="product-card">
-            <div>
-                <h3>${product.name}</h3>
-                <p>${product.description}</p>
+    grid.innerHTML = products.map((product, pIndex) => {
+        // Handle images array (if single string or comma separated)
+        let images = product.images || ["https://via.placeholder.com/300x180?text=Vortexique"];
+        if(typeof images === 'string') {
+            images = images.split(',').map(img => img.trim());
+        }
+
+        const imageHTML = images.map((img, i) => `
+            <img src="${img}" class="${i === 0 ? 'active' : ''}" alt="${product.name}">
+        `).join('');
+
+        return `
+            <div class="product-card">
+                <div>
+                    <div class="product-image-container" id="slider-${pIndex}">
+                        ${imageHTML}
+                        ${images.length > 1 ? `
+                            <div class="slider-btns">
+                                <button onclick="changeSlide(${pIndex}, -1)">◀</button>
+                                <button onclick="changeSlide(${pIndex}, 1)">▶</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <h3>${product.name}</h3>
+                    <p>${product.description}</p>
+                </div>
+                <div>
+                    <div class="price">$${Number(product.price).toFixed(2)}</div>
+                    <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
+                </div>
             </div>
-            <div>
-                <div class="price">$${Number(product.price).toFixed(2)}</div>
-                <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
+}
+
+// Image Slider Functionality
+window.slideIndices = {};
+function changeSlide(productIndex, direction) {
+    const slider = document.getElementById(`slider-${productIndex}`);
+    const images = slider.querySelectorAll('img');
+    
+    if(!window.slideIndices[productIndex]) {
+        window.slideIndices[productIndex] = 0;
+    }
+    
+    images[window.slideIndices[productIndex]].classList.remove('active');
+    
+    window.slideIndices[productIndex] = (window.slideIndices[productIndex] + direction + images.length) % images.length;
+    
+    images[window.slideIndices[productIndex]].classList.add('active');
+}
+
+// Toggle Admin Modal
+function toggleAdminModal() {
+    const modal = document.getElementById("admin-modal");
+    modal.classList.toggle("open");
+}
+
+// Add New Product Handler
+function addNewProduct(event) {
+    event.preventDefault();
+    
+    const title = document.getElementById("p-title").value;
+    const desc = document.getElementById("p-desc").value;
+    const price = parseFloat(document.getElementById("p-price").value);
+    const imagesInput = document.getElementById("p-images").value;
+    
+    const images = imagesInput.split(',').map(img => img.trim());
+
+    const newProduct = {
+        id: Date.now(), // Unique ID
+        name: title,
+        description: desc,
+        price: price,
+        images: images
+    };
+
+    let customProducts = JSON.parse(localStorage.getItem('custom_products')) || [];
+    customProducts.push(newProduct);
+    localStorage.setItem('custom_products', JSON.stringify(customProducts));
+
+    // Reset form and close modal
+    document.getElementById("product-form").reset();
+    toggleAdminModal();
+    
+    // Refresh products list
+    fetchProducts();
+    alert("Product added successfully!");
 }
 
 // Cart Drawer Toggle
