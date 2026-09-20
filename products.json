@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "Cloud Automation Script",
+    "description": "Python based automated data scraper script.",
+    "price": 49.99
+  },
+  {
+    "id": 2,
+    "name": "AI Workflow Template",
+    "description": "Ready-to-use n8n integration template.",
+    "price": 29.99
+  },
+  {
+    "id": 3,
+    "name": "Secure API Boilerplate",
+    "description": "Production-ready backend API structure.",
+    "price": 99.99
+  }
+]
