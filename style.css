@@ -103,26 +103,32 @@ body {
     border-color: #38bdf8;
 }
 
-/* Product Image Gallery Slider */
+/* Product Image Gallery Slider Fixed */
 .product-image-container {
     position: relative;
     width: 100%;
-    height: 180px;
+    height: 190px;
     overflow: hidden;
     border-radius: 8px;
     margin-bottom: 15px;
-    background: #0f172a;
+    background-color: #0f172a;
 }
 
 .product-image-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 }
 
 .product-image-container img.active {
-    display: block;
+    opacity: 1;
+    visibility: visible;
 }
 
 .slider-btns {
@@ -131,16 +137,23 @@ body {
     right: 8px;
     display: flex;
     gap: 5px;
+    z-index: 10;
 }
 
 .slider-btns button {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.75);
     color: white;
     border: none;
-    padding: 4px 8px;
+    padding: 5px 9px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.8rem;
+    transition: background 0.2s;
+}
+
+.slider-btns button:hover {
+    background: rgba(56, 189, 248, 0.9);
+    color: #0f172a;
 }
 
 .product-card h3 {
