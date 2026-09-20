@@ -31,15 +31,16 @@ function renderProducts() {
     grid.innerHTML = products.map((product, pIndex) => {
         let images = product.images;
         
-        // Handle images array safely
-        if (!images || (Array.isArray(images) && images.length === 0)) {
-            images = [`https://picsum.photos/seed/${product.id}/500/300`];
-        } else if (typeof images === 'string') {
+        // Ensure images is always a clean array of strings
+        if (typeof images === 'string') {
             images = images.split(',').map(img => img.trim()).filter(img => img.length > 0);
-            if (images.length === 0) {
-                images = [`https://picsum.photos/seed/${product.id}/500/300`];
-            }
         }
+        
+        if (!images || !Array.isArray(images) || images.length === 0) {
+            images = [`https://picsum.photos/seed/${product.id}/500/300`];
+        }
+
+        console.log(`Product: ${product.name}`, images);
 
         const imageHTML = images.map((img, i) => `
             <img src="${img}" class="${i === 0 ? 'active' : ''}" alt="${product.name}" onerror="this.src='https://picsum.photos/seed/${product.id}/500/300'">
