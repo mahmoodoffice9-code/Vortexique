@@ -3,30 +3,38 @@
     "id": 1,
     "name": "Cloud Automation Script",
     "description": "Python based automated data scraper script for high-speed lead gen.",
-    "price": 49.99
+    "price": 49.99,
+    "images": [
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=500&auto=format&fit=crop&q=60"
+    ]
   },
   {
     "id": 2,
     "name": "AI Workflow Template",
     "description": "Ready-to-use n8n integration template for smart automation.",
-    "price": 29.99
+    "price": 29.99,
+    "images": [
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=60",
+      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=500&auto=format&fit=crop&q=60"
+    ]
   },
   {
     "id": 3,
     "name": "Secure API Boilerplate",
     "description": "Production-ready backend API structure with built-in auth.",
-    "price": 99.99
+    "price": 99.99,
+    "images": [
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=500&auto=format&fit=crop&q=60"
+    ]
   },
   {
     "id": 4,
     "name": "SaaS Landing Page UI Kit",
     "description": "Modern, high-converting HTML/CSS responsive templates.",
-    "price": 19.99
-  },
-  {
-    "id": 5,
-    "name": "Prompt Engineering Bundle",
-    "description": "Curated set of 500+ advanced LLM system prompts.",
-    "price": 39.99
+    "price": 19.99,
+    "images": [
+      "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=500&auto=format&fit=crop&q=60"
+    ]
   }
 ]
