@@ -20,7 +20,7 @@ async function fetchProducts() {
     }
 }
 
-// Render Products with Image Slider Support & Fallback
+// Render Products with Image Slider Support & Unique Fallback
 function renderProducts() {
     const grid = document.getElementById("product-grid");
     if (products.length === 0) {
@@ -29,17 +29,20 @@ function renderProducts() {
     }
     
     grid.innerHTML = products.map((product, pIndex) => {
-        // Handle images array safely
         let images = product.images;
         
+        // Agar images na hon toh product id ke hisab se unique placeholder assign ho ga
         if (!images || (Array.isArray(images) && images.length === 0)) {
-            images = ["https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=60"];
+            images = [`https://picsum.photos/seed/${product.id}/500/300`];
         } else if (typeof images === 'string') {
             images = images.split(',').map(img => img.trim()).filter(img => img.length > 0);
+            if (images.length === 0) {
+                images = [`https://picsum.photos/seed/${product.id}/500/300`];
+            }
         }
 
         const imageHTML = images.map((img, i) => `
-            <img src="${img}" class="${i === 0 ? 'active' : ''}" alt="${product.name}" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=60'">
+            <img src="${img}" class="${i === 0 ? 'active' : ''}" alt="${product.name}" onerror="this.src='https://picsum.photos/seed/${product.id}/500/300'">
         `).join('');
 
         return `
@@ -70,6 +73,7 @@ function renderProducts() {
 window.slideIndices = {};
 function changeSlide(productIndex, direction) {
     const slider = document.getElementById(`slider-${productIndex}`);
+    if (!slider) return;
     const images = slider.querySelectorAll('img');
     
     if(!window.slideIndices[productIndex]) {
