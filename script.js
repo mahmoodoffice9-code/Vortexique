@@ -1,15 +1,29 @@
-// Dummy Products (Bad mein ye data Supabase se aayega)
-const products = [
-    { id: 1, name: "Cloud Automation Script", price: 49.99, description: "Python based automated data scraper script." },
-    { id: 2, name: "AI Workflow Template", price: 29.99, description: "Ready-to-use n8n integration template." },
-    { id: 3, name: "Secure API Boilerplate", price: 99.99, description: "Production-ready backend API structure." }
-];
-
+let products = [];
 let cart = [];
+
+// Apni khud ki JSON file se products fetch karna
+async function fetchProducts() {
+    try {
+        const response = await fetch('products.json');
+        if (!response.ok) {
+            throw new Error('Failed to load products');
+        }
+        products = await response.json();
+        renderProducts();
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        document.getElementById("product-grid").innerHTML = "<p>Failed to load products.</p>";
+    }
+}
 
 // Load Products on Page
 function renderProducts() {
     const grid = document.getElementById("product-grid");
+    if (products.length === 0) {
+        grid.innerHTML = "<p>Loading products...</p>";
+        return;
+    }
+    
     grid.innerHTML = products.map(product => `
         <div class="product-card">
             <div>
@@ -17,7 +31,7 @@ function renderProducts() {
                 <p>${product.description}</p>
             </div>
             <div>
-                <div class="price">$${product.price.toFixed(2)}</div>
+                <div class="price">$${Number(product.price).toFixed(2)}</div>
                 <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
             </div>
         </div>
@@ -72,11 +86,11 @@ function checkout() {
         alert("Your cart is empty!");
         return;
     }
-    alert("Checkout successful! (Supabase order saving will be added next).");
+    alert("Checkout successful!");
     cart = [];
     updateCartUI();
     toggleCart();
 }
 
 // Initialize
-renderProducts();
+fetchProducts();
