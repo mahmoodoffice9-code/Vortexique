@@ -31,7 +31,7 @@ function renderProducts() {
     grid.innerHTML = products.map((product, pIndex) => {
         let images = product.images;
         
-        // Agar images na hon toh product id ke hisab se unique placeholder assign ho ga
+        // Handle images array safely
         if (!images || (Array.isArray(images) && images.length === 0)) {
             images = [`https://picsum.photos/seed/${product.id}/500/300`];
         } else if (typeof images === 'string') {
@@ -93,7 +93,7 @@ function toggleAdminModal() {
     modal.classList.toggle("open");
 }
 
-// Add New Product Handler
+// Add New Product Handler (Fixed Image URL parsing)
 function addNewProduct(event) {
     event.preventDefault();
     
@@ -102,7 +102,16 @@ function addNewProduct(event) {
     const price = parseFloat(document.getElementById("p-price").value);
     const imagesInput = document.getElementById("p-images").value;
     
-    const images = imagesInput.split(',').map(img => img.trim()).filter(img => img.length > 0);
+    // Clean and split image URLs properly
+    let images = imagesInput
+        .split(',')
+        .map(img => img.trim())
+        .filter(img => img.length > 0);
+
+    // Fallback if no valid link is provided
+    if (images.length === 0) {
+        images = [`https://picsum.photos/seed/${Date.now()}/500/300`];
+    }
 
     const newProduct = {
         id: Date.now(), // Unique ID
